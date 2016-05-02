@@ -24,12 +24,17 @@ elif logInFromFile == True:
 		inPassword = intoken.read().replace("\n", "")
 
 payload = {"type": 2}
-async def block(userToBlock, server, channel):
+async def block(userToBlock, userToBlockName, server, channel):
 	headers = {"Content-Type": "application/json", "Authorization": client.token, "Origin": "https://discordapp.com", "Accept": "*/*", "Referer": "https://discordapp.com/channels/" + server + "/" + channel}
-	with aiohttp.ClientSession() as session:
-		await session.put("https://discordapp.com/api/users/@me/relationships/" + userToBlock, data=json.dumps(payload), headers=headers)
-		await session.close()
-		time.sleep(5)
+	try:
+		with aiohttp.ClientSession() as session:
+			await asyncio.sleep(5)
+			async with session.put("https://discordapp.com/api/users/@me/relationships/" + userToBlock, data=json.dumps(payload), headers=headers) as response:
+				print("blocked " + userToBlock + " - " + userToBlockName)
+				await session.close()
+	except aiohttp.errors.ServerDisconnectedError:
+		pass
+
 
 client = discord.Client()
 
@@ -39,26 +44,29 @@ async def on_ready():
 	print(client.token)
 
 init = False
-allowedChars = "aàãáäbcdeèẽéëfghiìĩíïjklmnoòõóöpqvǜṽǘwyỳỹýÿzAÀÃÁÄBCDEÈẼËÉFGHIÌĨÍÏJKLMNOÒÕÓÖPQVǛṼǗWXYỲỸÝŸZ 1234567890 !@#$%*()_+`~[]}{\|;´\";:,./<>?'"
+allowedChars = "aàãáäâbcdeèẽéëêfghiìĩíïîjklmnoòõóöôpqrsśtuùũúüûvǜṽǘwxẍyỳỹýÿŷzAÀÃÁÄBCDEÈẼËÉFGHIÌĨÍÏJKLMNOÒÕÓÖPQRSŚTUÙŨÚÜVǛṼǗWXẌYỲỸÝŸZ 1234567890 !@#$%*()_+`~[]}{\|;´\";:,./<>?'"
 @client.event
 async def on_message(message):
 	count = 0
 	tok = ""
 	global init
-	if message.content.startswith("acc"):
+	if message.content.startswith("acc") and message.author.id == client.user.id:
 		tempMsg = message.content.split(" ")
 		try:
 			if tempMsg[1] == "init":
 				init = True
+			elif tempMsg[1] == "exit":
+				await client.logout()
 		except IndexError:
 			pass
 	if init == True:
-		print("true")
 		tempAuthor = list(message.author.name)
 		for char in tempAuthor:
 			if char not in allowedChars:
+				print(char)
 				count += 1
 			if count > 2:
-				await block(message.author.id, message.server.id, message.channel.id)
+				await block(message.author.id, message.author.name, message.server.id, message.channel.id)
+				break
 
 client.run(inEmail, inPassword)
