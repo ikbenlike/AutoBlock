@@ -55,7 +55,7 @@ async def on_ready():
 	print("logged in as " + client.user.name + " - " + client.user.id)
 
 init = False
-allowedChars = "aàãáäâbcdeèẽéëêfghiìĩíïîjklmnoòõóöôpqrsśtuùũúüûvǜṽǘwxẍyỳỹýÿŷzAÀÃÁÄBCDEÈẼËÉFGHIÌĨÍÏJKLMNOÒÕÓÖPQRSŚTUÙŨÚÜVǛṼǗWXẌYỲỸÝŸZ 1234567890 !@#$%*()_+`~[]}{\|;´\";:,./<>?'"
+allowedChars = "aàãáäâbcdeèẽéëêfghiìĩíïîjklmḿnǹñńoòõóöôpqrsśtuùũúüûvǜṽǘwxẍyỳỹýÿŷzAÀÃÁÄBCDEÈẼËÉFGHIÌĨÍÏJKLMḾNǸÑŃOÒÕÓÖPQRSŚTUÙŨÚÜVǛṼǗWXẌYỲỸÝŸZ 1234567890 !@#$%*()_+`~[]}{\|;´\";:,./<>?'"
 @client.event
 async def on_message(message):
 	count = 0
